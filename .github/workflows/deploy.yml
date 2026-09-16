@@ -2,7 +2,7 @@ name: deploy-production
 
 on:
   push:
-    branches: [master]
+    branches: [master, 'hotfix/**']
 
 permissions:
   contents: read
@@ -23,7 +23,7 @@ jobs:
             const deployment = await github.rest.repos.createDeployment({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              ref: context.sha,
+              ref: context.ref,
               environment: 'production',
               required_contexts: [],
               auto_merge: false,
