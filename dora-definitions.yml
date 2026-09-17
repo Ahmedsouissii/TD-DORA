@@ -1,0 +1,57 @@
+# dora-definitions.yml : contrat d'équipe, versionné avec le code
+#
+# TD phase 0 : rempli avant de lancer le moindre outil, figé le 16/09/2026
+# vers 10h.
+
+application: excalidraw
+
+deploiement:
+  compte_comme_deploiement: "un évènement de l'API Deployments dont l'environment est exactement Production – excalidraw et qui a atteint le statut success"
+  exclut: ["les environnements Preview (builds de preview à chaque PR), les Production des packages d'exemple (excalidraw-package-example et excalidraw-package-example-with-nextjs), et Production – docs"]
+
+  horodatage: "le created_at du premier statut success, pas le created_at du déploiement"
+
+changement:
+  point_de_depart: "committer date sur la branche par défaut, pas l'ouverture de la PR"
+
+incident:
+  definition: "proxy : une issue portant le label bug. Ce n'est pas la métrique DORA, on n'exploite pas la production d'excalidraw, on ne peut pas savoir ce qui gêne vraiment les utilisateurs"
+  source: "les issues du dépôt"
+  debut: "l'ouverture du ticket"
+  fin: "la fermeture du ticket"
+  rattachement_deploiement: "une mention caused_by: <id> dans le corps de l'issue, qui rattache l'incident au déploiement responsable"
+
+rework:
+  marqueur: "une ref de déploiement qui commence par hotfix/"
+
+fenetre_de_reference: "90 jours glissants"
+agregation: "médiane et P90, jamais la moyenne"
+
+# ---------------------------------------------------------------------------
+# Phase 3 : rempli après avoir vu les chiffres, le 17/09/2026.
+#
+revision_envisagee: |
+  La partie que je changerais si je devais refaire le contrat, c'est surtout le
+  rattachement entre un incident et le déploiement responsable.
+
+  Pour la détection des incidents, le proxy avec le label bug fonctionnait :
+  le collecteur en a trouvé 23 sur la fenêtre. Par contre, aucune de ces issues
+  n'était reliée à un déploiement. Du coup, impossible de calculer le change fail
+  rate, le recovery time et le rework rate : les trois sortaient en n/a.
+
+  En fait, le problème n'était donc pas vraiment la détection des incidents,
+  mais le lien entre l'incident et le déploiement qui l'aurait causé. Je ne
+  m'en suis rendu compte qu'en regardant les résultats.
+
+  Si c'était à refaire, je vérifierais avant de figer le contrat que la donnée
+  existe réellement. Par exemple, je regarderais sur un échantillon combien
+  d'issues contiennent déjà un caused_by.
+
+  J'ajouterais aussi que le proxy bug peut évoluer dans le temps. Le 16/09,
+  j'avais 23 issues avec ce label sur la fenêtre, puis une recherche faite deux
+  jours plus tard n'en retournait plus aucune. Les mainteneurs peuvent retirer
+  le label pendant le triage ou à la fermeture.
+
+  Ce qui m'a surtout surpris, c'est qu'on peut avoir beaucoup de données
+  disponibles dans GitHub et quand même ne pas pouvoir calculer une métrique
+  simplement parce qu'il manque un petit lien entre deux types de données.
