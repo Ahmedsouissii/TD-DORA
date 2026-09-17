@@ -1,6 +1,6 @@
 # TD DORA - réponses
 
-## dora-definitions.yml (figé le 16/09/2026 vers 10h, avant tout lancement d'outil)
+## dora-definitions.yml 
 
 ```yaml
 application: excalidraw
